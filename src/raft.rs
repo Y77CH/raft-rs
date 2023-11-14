@@ -2006,6 +2006,7 @@ impl<T: Storage> Raft<T> {
     }
 
     fn step_leader(&mut self, mut m: Message) -> Result<()> {
+        debug!(self.logger, "MSG_PROFILE - step_leader");
         // These message types do not require any progress for m.From.
         match m.get_msg_type() {
             MessageType::MsgBeat => {
@@ -2024,6 +2025,16 @@ impl<T: Storage> Raft<T> {
                 return Ok(());
             }
             MessageType::MsgPropose => {
+                // PROFILE THE MESSAGE (Yiwei)
+                // for entry in message.entries.iter() {
+                //     // Convert the bytes to a readable format, e.g., hex string
+                //     let data_hex = hex::encode(&entry.data);
+            
+                //     // Log the data
+                //     debug!(self.logger, "MSG_PROFILE", data_hex);
+                // }
+                debug!(self.logger, "MSG_PROFILE - MsgPropose");
+
                 if m.entries.is_empty() {
                     fatal!(self.logger, "stepped empty MsgProp");
                 }
